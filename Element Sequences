@@ -1,0 +1,54 @@
+"""
+Federico Umansky
+"""
+
+
+
+def buscar_secuencia_mas_larga(elemento_quimico, lista_elementos):
+    if elemento_inicial not in elementos_quimicos:
+        print("El elemento ingresado no existe")
+    else:
+        secuencia_actual = [elemento_quimico]
+        secuencia_mas_larga = []
+    
+        def buscar_siguientes(elemento_actual, lista):
+            siguientes = [elemento for elemento in lista if elemento[0] == elemento_actual[-1] and elemento not in secuencia_actual]
+            if not siguientes:
+                if len(secuencia_actual) > len(secuencia_mas_larga):
+                    secuencia_mas_larga[:] = secuencia_actual[:]
+                return
+            for siguiente in siguientes:
+                secuencia_actual.append(siguiente)
+                buscar_siguientes(siguiente, lista)
+                secuencia_actual.pop()
+    
+        buscar_siguientes(elemento_quimico, lista_elementos)
+        return secuencia_mas_larga
+
+
+
+elementos_quimicos = ['actinium', 'aluminum', 'americium', 'antimony', 'argon', 'arsenic', 'astatine', 'barium', 'berkelium', 'beryllium', 'bismuth', 'bohrium', 'boron', 'bromine', 'cadmium', 'calcium', 'californium', 'carbon', 'cerium', 'cesium', 'chlorine', 'chromium', 'cobalt', 'copernicium', 'copper', 'curium', 'darmstadtium', 'dubnium', 'dysprosium', 'einsteinium', 'erbium', 'europium', 'fermium', 'flerovium', 'fluorine', 'francium', 'gadolinium', 'gallium', 'germanium', 'gold', 'hafnium', 'hassium', 'helium', 'holmium', 'hydrogen', 'indium', 'iodine', 'iridium', 'iron', 'krypton', 'lanthanum', 'lawrencium', 'lead', 'lithium', 'livermorium', 'lutetium', 'magnesium', 'manganese', 'meitnerium', 'mendelevium', 'mercury', 'molybdenum', 'moscovium', 'neodymium', 'neon', 'neptunium', 'nickel', 'nihonium', 'niobium', 'nitrogen', 'nobelium', 'oganesson', 'osmium', 'oxygen', 'palladium', 'phosphorus', 'platinum', 'plutonium', 'polonium', 'potassium', 'praseodymium', 'promethium', 'protactinium', 'radium', 'radon', 'rhenium', 'rhodium', 'roentgenium', 'rubidium', 'ruthenium', 'rutherfordium', 'samarium', 'scandium', 'seaborgium', 'selenium', 'silicon', 'silver', 'sodium', 'strontium', 'sulfur', 'tantalum', 'technetium', 'tellurium', 'tennessine', 'terbium', 'thallium', 'thorium', 'thulium', 'tin', 'titanium', 'tungsten', 'uranium', 'vanadium', 'xenon', 'ytterbium', 'yttrium', 'zinc', 'zirconium']
+
+
+elemento_inicial = input("Ingresa un elemento químico: ", )
+resultado = buscar_secuencia_mas_larga(elemento_inicial, elementos_quimicos)
+print("La secuencia más larga para ese elemento quimico es:", resultado)
+print("Su tamaño es de", len(resultado), "elementos quimicos")
+
+
+print("")
+
+
+resultado_mas_largo = []
+def elemento_inicial_con_secuencia_mas_larga(resultado):
+    for i in elementos_quimicos:
+        resultado = buscar_secuencia_mas_larga(i, elementos_quimicos)
+        if len(resultado) > len(resultado_mas_largo):
+            resultado_mas_largo[:] = resultado[:]
+        else: 
+            None
+    
+
+resultado_final = elemento_inicial_con_secuencia_mas_larga(resultado)
+print("El elemento quimico", resultado_mas_largo[0], "tiene la secuencia mas larga con un tamaño de", len(resultado_mas_largo), "elementos_quimicos")
+print("Su secuencia es la siguiente: ", resultado_mas_largo)
