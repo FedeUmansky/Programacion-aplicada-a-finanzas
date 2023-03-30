@@ -1,0 +1,38 @@
+"""
+Federico Umansky
+"""
+
+elementos_quimicos = ['actinium', 'aluminum', 'americium', 'antimony', 'argon', 'arsenic', 'astatine', 'barium', 'berkelium', 'beryllium', 'bismuth', 'bohrium', 'boron', 'bromine', 'cadmium', 'calcium', 'californium', 'carbon', 'cerium', 'cesium', 'chlorine', 'chromium', 'cobalt', 'copernicium', 'copper', 'curium', 'darmstadtium', 'dubnium', 'dysprosium', 'einsteinium', 'erbium', 'europium', 'fermium', 'flerovium', 'fluorine', 'francium', 'gadolinium', 'gallium', 'germanium', 'gold', 'hafnium', 'hassium', 'helium', 'holmium', 'hydrogen', 'indium', 'iodine', 'iridium', 'iron', 'krypton', 'lanthanum', 'lawrencium', 'lead', 'lithium', 'livermorium', 'lutetium', 'magnesium', 'manganese', 'meitnerium', 'mendelevium', 'mercury', 'molybdenum', 'moscovium', 'neodymium', 'neon', 'neptunium', 'nickel', 'nihonium', 'niobium', 'nitrogen', 'nobelium', 'oganesson', 'osmium', 'oxygen', 'palladium', 'phosphorus', 'platinum', 'plutonium', 'polonium', 'potassium', 'praseodymium', 'promethium', 'protactinium', 'radium', 'radon', 'rhenium', 'rhodium', 'roentgenium', 'rubidium', 'ruthenium', 'rutherfordium', 'samarium', 'scandium', 'seaborgium', 'selenium', 'silicon', 'silver', 'sodium', 'strontium', 'sulfur', 'tantalum', 'technetium', 'tellurium', 'tennessine', 'terbium', 'thallium', 'thorium', 'thulium', 'tin', 'titanium', 'tungsten', 'uranium', 'vanadium', 'xenon', 'ytterbium', 'yttrium', 'zinc', 'zirconium']
+
+
+def buscar_secuencia_mas_corta(inicio, fin):
+    # Verificar que los elementos existen en la lista
+    if inicio not in elementos_quimicos or fin not in elementos_quimicos:
+        print("Uno o ambos elementos no existen en la lista.")
+    
+    # Cola de nodos por visitar, comenzando con el nodo inicial
+    cola = [(inicio, [inicio])]
+    
+    # Mientras hayan nodos por visitar
+    while cola:
+        # Sacar el primer nodo de la cola
+        (nodo_actual, secuencia_actual) = cola.pop(0)
+        
+        # Si el nodo actual es el nodo final, retornar la secuencia actual
+        if nodo_actual == fin:
+            return secuencia_actual
+        
+        # Buscar los nodos siguientes que cumplan la condición de tener la última letra del nodo anterior
+        siguientes = [elemento for elemento in elementos_quimicos if elemento[0] == nodo_actual[-1] and elemento not in secuencia_actual]
+        
+        # Agregar los nuevos nodos a la cola con la nueva secuencia
+        for siguiente in siguientes:
+            cola.append((siguiente, secuencia_actual + [siguiente]))
+    
+    # Si no se encontró ninguna secuencia, retornar None
+    print("No se encontró una secuencia entre los elementos dados.")
+
+inicio = input("Ingrese el elemento quimico inicial: ")
+fin = input("Ingrese el elemento quimico final: ")
+secuencia_mas_corta = buscar_secuencia_mas_corta(inicio, fin)
+print("La secuencia mas corta que comienza con el elemento quimico", inicio, "y termina con", fin, "es", secuencia_mas_corta)
