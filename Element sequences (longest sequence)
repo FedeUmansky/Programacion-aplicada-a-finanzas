@@ -3,7 +3,6 @@ Federico Umansky
 """
 
 
-
 def buscar_secuencia_mas_larga(elemento_quimico, lista_elementos):
     if elemento_inicial not in elementos_quimicos:
         print("El elemento ingresado no existe")
