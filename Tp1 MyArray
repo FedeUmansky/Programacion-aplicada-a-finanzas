@@ -1,0 +1,276 @@
+"""
+Federico Umansky
+Trabajo Practico 1
+"""
+
+class MyArray:
+    
+    def __init__(self, elems, r, c, by_row=True):
+        if len(elems) != r * c:
+            raise ValueError("La longitud de elems no coincide con las dimensiones r y c.")
+        self.elems = elems
+        self.r = r
+        self.c = c
+        self.by_row = by_row
+        
+        """
+        -elems: Lista que contiene los elementos de la matriz
+        -r: indicador Cantidad de filas
+        -c: indicador Cantidad de columnas
+        -by_row=True: Los elementos de la lista elems estan organizados por filas.
+                      En una matriz 2x2 (r, c) = (2, 2) elems = [(0, 0), (0, 1), (1, 0), (1, 1)]
+        -by_row=False: Los elementos de la lista elems estan organizados por columnas
+                       En una matriz 2x2 (r, c) = (2, 2) ; elems (j, k) = [(0, 0), (1, 0), (0, 1), (1, 1)]
+        """
+
+    def get_pos(self, j, k):
+        if j >= self.r or k >= self.c:
+            raise ValueError("Las coordenadas j y k deben ser menores que r y c respectivamente.")
+        if self.by_row:
+            m = j * self.c + k
+        else:
+            m = k * self.r + j
+        return m
+        
+        """
+        Toma las coordenadas (j, k) en la matriz y devuelve la posicion m asociada en la lista elems.
+        """
+
+    def get_coords(self, m):
+        if m >= self.r * self.c:
+            raise ValueError("La posición m debe ser menor que r * c.")
+        if self.by_row:
+            j, k = (m // self.c, m % self.c)
+        else:
+            j, k = (m % self.r, m // self.r)
+        return j, k
+    
+        """
+        Toma una posicion m en la lista y devuelve las coordenadas (j,k) correspondientes en la matriz.
+        """
+    
+    def switch(self):
+        if self.r <= 0 or self.c <= 0:
+            raise ValueError("La matriz debe tener al menos una fila y una columna.")
+        if self.by_row:
+            # new_by_row = False
+            new_elems = [self.elems[k*self.r+j] for j in range(self.r) for k in range(self.c)]
+        else:
+            # new_by_row = True
+            new_elems = [self.elems[j*self.c+k] for k in range(self.c) for j in range(self.r)]
+        return new_elems
+    
+        """
+        Devuelve un objeto con la misma matriz, pero creando una nueva lista "new_elems" donde cambia 
+        el valor de verdad de by_row.
+        """
+    
+    def get_row(self, j):
+        if j >= self.r:
+            raise ValueError("La fila j debe ser menor que r.")
+        start_pos = self.get_pos(j, 0)
+        end_pos = start_pos + self.c
+        if self.by_row:
+            contenido_fila_j = self.elems[start_pos:end_pos]
+        else:
+            contenido_fila_j = [self.elems[k * self.r + j] for k in range(self.c)]
+        return contenido_fila_j
+    
+        """
+        Devuelve el contenido de la fila j.
+        """
+
+    def get_col(self, k):
+        if k >= self.c:
+            raise ValueError("La columna k debe ser menor que c.")
+        start_pos = self.get_pos(0, k)
+        end_pos = start_pos + self.r * self.c if self.by_row else start_pos + self.r
+        contenido_columna_k = [self.elems[m] for m in range(start_pos, end_pos, self.c if self.by_row else 1)]
+        return contenido_columna_k
+    
+        """
+        Devuelve el contenido de la columna k.
+        """
+
+    def get_elem(self, j, k):
+        if j >= self.r or k >= self.c:
+            raise ValueError("Las coordenadas j y k deben ser menores que r y c respectivamente.")
+        elemento = self.elems[self.get_pos(j, k)]
+        return elemento
+    
+        """
+        Devuelve el elemento que está en la coordenada (j, k).
+        """
+    
+    def del_row(self, j):
+        if j >= self.r:
+            raise ValueError("La fila j debe ser menor que r.")
+        start_pos = self.get_pos(j, 0)
+        end_pos = start_pos + self.c
+        new_elems = self.elems[:start_pos] + self.elems[end_pos:]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero habiendo eliminado una fila j.
+        """
+
+    def del_col(self, k):
+        if k >= self.c:
+            raise ValueError("La columna k debe ser menor que c.")
+        new_elems = []
+        for i in range(self.r):
+            row = self.get_row(i)
+            del row[k]
+            new_elems.extend(row)
+        return new_elems
+
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero habiendo eliminado una columna k.
+        """
+
+    def swap_rows(self, j, k):
+        if j >= self.r or k >= self.r:
+            raise ValueError("Las filas j y k deben ser menores que r.")
+        new_elems = self.elems.copy()
+        for col in range(self.c):
+            pos_j = self.get_pos(j, col)
+            pos_k = self.get_pos(k, col)
+            new_elems[pos_j], new_elems[pos_k] = new_elems[pos_k], new_elems[pos_j]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero con las filas j y k intercambiadas.
+        """
+      
+    def swap_cols(self, l, m):
+        if l >= self.c or m >= self.c:
+            raise ValueError("Las columnas l y m deben ser menores que c.")
+        new_elems = self.elems.copy()
+        for row in range(self.r):
+            pos_l = self.get_pos(row, l)
+            pos_m = self.get_pos(row, m)
+            new_elems[pos_l], new_elems[pos_m] = new_elems[pos_m], new_elems[pos_l]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero con las columnas l y m intercambiadas.
+        """
+
+    def scale_row(self, j, x):
+        if j >= self.r:
+            raise ValueError("La fila j debe ser menor que r.")
+        new_elems = self.elems[:]
+        start_pos = self.get_pos(j, 0)
+        end_pos = start_pos + self.c
+        for m in range(start_pos, end_pos):
+            new_elems[m] = x * self.elems[m]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero con la fila j multiplicada por el factor x.
+        """
+    
+    def scale_col(self, k, y):
+        if k >= self.c:
+            raise ValueError("La columna k debe ser menor que c.")
+        new_elems = self.elems[:]
+        start_pos = self.get_pos(0, k)
+        end_pos = start_pos + self.r * self.c if self.by_row else start_pos + self.r
+        for m in range(start_pos, end_pos, self.c if self.by_row else 1):
+            new_elems[m] = y * self.elems[m]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero con la columna k multiplicada por el factor y.
+        """
+    
+    def transpose(self):
+        if self.r <= 0 or self.c <= 0:
+            raise ValueError("La matriz debe tener al menos una fila y una columna.")
+        new_elems = [0] * self.r * self.c
+        for i in range(self.r):
+            for j in range(self.c):
+                new_elems[j*self.r+i] = self.elems[i*self.c+j]
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es la traspuesta de "elems" 
+        """
+    
+    def flip_rows(self):
+        if self.r <= 0 or self.c <= 0:
+            raise ValueError("La matriz debe tener al menos una fila y una columna.")
+        new_elems = self.elems[:]
+        for i in range(self.c):
+            col = self.elems[i::self.c]
+            new_col = col[::-1]
+            for j, val in enumerate(new_col):
+                new_elems[i+j*self.c] = val
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero reflejado especularmente en sus filas.
+        
+        "val" es un elemento de la columna invertida que se está recorriendo y se utiliza 
+        para actualizar los elementos de la matriz original en su nueva posición invertida.
+        """
+    
+    def flip_cols(self):
+        if self.r <= 0 or self.c <= 0:
+            raise ValueError("La matriz debe tener al menos una fila y una columna.")
+        new_elems = self.elems[:]
+        for i in range(self.r):
+            row = self.elems[i*self.c:(i+1)*self.c]
+            new_row = row[::-1]
+            new_elems[i*self.c:(i+1)*self.c] = new_row
+        return new_elems
+    
+        """
+        Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
+        pero reflejado especularmente en sus columnas.
+        """
+        
+    def det(self):
+        if self.r != self.c:
+            raise ValueError("La matriz no es cuadrada.")
+        
+        if self.r == 1: 
+            "matriz 1x1"
+            return self.elems[0]
+        elif self.r == 2:
+            "matriz 2x2"
+            return self.elems[0] * self.elems[3] - self.elems[1] * self.elems[2]
+        
+        det_value = 0 
+        "valor del determinante"
+        sign = 1 
+        "se utiliza para alternar el signo del determinante"
+        
+        for j in range(self.c):
+            submatrix = []
+            for i in range(1, self.r):
+                for k in range(self.c):
+                    if k != j:
+                        submatrix.append(self.elems[i*self.c + k])
+            "Para cada columna, se crea una submatriz eliminando la primera fila y la columna correspondiente"
+                        
+            submatrix_det = MyArray(submatrix, self.r-1, self.c-1).det()
+            det_value += self.elems[j] * submatrix_det * sign
+            sign = -sign
+        
+        return det_value
+    
+        """
+        Devuelve el valor del determinante
+        """
+
+    
+MYARRAY = MyArray([], r, c, by_row=())
+print(MYARRAY.metodo)
