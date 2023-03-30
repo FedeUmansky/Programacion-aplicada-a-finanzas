@@ -1,0 +1,20 @@
+"""
+Federico Umansky
+"""
+
+
+#%%
+
+def valor_actual(flujo_de_fondos, tir, periodo):
+    if periodo == 0:
+        return flujo_de_fondos[0]
+    else:
+        return (flujo_de_fondos[periodo] / ((1 + tir) ** periodo)) + valor_actual(flujo_de_fondos, tir, periodo - 1)
+
+flujo_de_fondos = []
+tir = 
+periodo = len(flujo_de_fondos) - 1
+
+print("El valor actual del flujo de fondos es: ", valor_actual(flujo_de_fondos, tir, periodo))
+
+#%%
