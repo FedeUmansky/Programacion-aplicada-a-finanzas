@@ -1,0 +1,16 @@
+"""
+Federico Umansky
+"""
+
+
+def hanoi(n, i, j):
+    if n == 1:
+        print("Move disc 1 from rod", i, "to rod", j)
+    else:
+        k = 6 - i - j
+        hanoi(n - 1, i, k)
+        print("Move disc", n, "from rod", i, "to rod", j)
+        hanoi(n - 1, k, j)
+
+n = int(input("Enter the number of discs: "))
+hanoi(n, 1, 3)
