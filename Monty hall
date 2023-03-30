@@ -1,0 +1,93 @@
+"""
+Federico Umansky
+"""
+
+#%%
+
+import random
+
+elemento_1 = "Cabra"
+elemento_2 = "Cabra"
+elemento_3 = "Premio"
+
+puertas = ["Puerta 1", "Puerta 2", "Puerta 3"]
+
+random.shuffle(puertas)
+
+puerta_elemento_1 = puertas[0]
+puerta_elemento_2 = puertas[1]
+puerta_elemento_3 = puertas[2]
+
+
+eleccion_de_puerta = input("Elije una puerta: ")
+def monty_hall(eleccion_de_puerta):
+    for puerta in puertas: 
+        if len(puertas) == 3:
+            if puerta != elemento_3 and puerta != eleccion_de_puerta:
+                print("Abriremos la", puerta, "donde vemos que hay una cabra.")
+                puertas.remove(puerta)
+                print("Ahora solo quedan 2 puertas:", puertas)
+                continue
+        else:
+            eleccion_2_de_puerta = input("¿Te quedas con tu eleccion o cambias de puerta? Elije una puerta: ")
+            if eleccion_2_de_puerta == puerta_elemento_3:
+                print("Felicidades, ha ganado el premio.")
+            elif eleccion_2_de_puerta == puerta_elemento_1 or puerta_elemento_2:
+                print("Ha perdido. En la puerta que ha elegido se encuentra una cabra.")
+           
+            
+MONTY_HALL = monty_hall(eleccion_de_puerta)
+
+#%%
+
+import random
+
+def jugar_Monty_Hall(cambiar_puerta):
+    # Definir las tres puertas y los elementos que hay detrás
+    puertas = ["puerta1", "puerta2", "puerta3"]
+    elementos = ["cabra", "cabra", "premio"]
+    
+    # Mezclar aleatoriamente los elementos tras las puertas
+    random.shuffle(elementos)
+    
+    # Crear un diccionario para guardar las puertas y los elementos
+    puertas_elementos = dict(zip(puertas, elementos))
+    
+    # El jugador elige una puerta
+    eleccion_de_puerta = puertas[0]
+    
+    # El presentador abre una puerta con una cabra
+    for puerta, elemento in puertas_elementos.items():
+        if elemento == "cabra" and puerta != eleccion_de_puerta:
+            puertas.remove(puerta)
+            break
+    
+    # Si el jugador cambia de puerta, cambia su elección
+    if cambiar_puerta:
+        eleccion_de_puerta = [puerta for puerta in puertas if puerta != eleccion_de_puerta][0]
+    
+    # Comprobar si ha ganado el premio
+    return puertas_elementos[eleccion_de_puerta] == "premio"
+
+
+# Jugar Monty Hall muchas veces
+num_juegos = 100000
+ganados_sin_cambiar = 0
+ganados_cambiando = 0
+
+for i in range(num_juegos):
+    # Jugar el juego sin cambiar de puerta
+    if jugar_Monty_Hall(cambiar_puerta=False):
+        ganados_sin_cambiar += 1
+    
+    # Jugar el juego cambiando de puerta
+    if jugar_Monty_Hall(cambiar_puerta=True):
+        ganados_cambiando += 1
+
+# Calcular el porcentaje de juegos ganados
+porcentaje_sin_cambiar = ganados_sin_cambiar / num_juegos * 100
+porcentaje_cambiando = ganados_cambiando / num_juegos * 100
+
+# Imprimir los resultados
+print("Porcentaje de juegos ganados sin cambiar de puerta: {:.2f}%".format(porcentaje_sin_cambiar))
+print("Porcentaje de juegos ganados cambiando de puerta: {:.2f}%".format(porcentaje_cambiando))
