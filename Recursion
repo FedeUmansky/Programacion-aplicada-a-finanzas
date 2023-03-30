@@ -1,0 +1,111 @@
+"""
+Federico Umansky
+"""
+
+ 
+#%%
+# Compute the sum of the integers from 0 up to and including n using recursion # @param n the maximum value to include in the sum
+# @return the sum of the integers from 0 up to and including n
+def sum_to(n):
+    if n <= 0:
+        return 0 #Basecase
+    else:
+        return n + sum_to(n - 1) # Recursive case
+# Compute the sum of the integers from 0 up to and including a value entered by the user
+    num = int(input("Enter a non-negative integer: "))
+    total = sum_to(num)
+    print("The total of the integers from 0 up to and including", \
+      num, "is", total)
+    
+    
+
+#%%
+# Compute the nth Fibonacci number using recursion
+# @param n the index of the Fibonacci number to compute # @return the nth Fibonacci number
+def fib(n):
+# Base cases
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+# Recursive case
+    return fib(n-1) + fib(n-2)
+# Compute the Fibonacci number requested by the user
+    n = int(input("Enter a non-negative integer: "))
+    print("fib(%d) is %d." % (n, fib(n)))
+    
+#%%       
+# Count the number of times a particular character is present in a string # @param s the string in which the characters are counted
+# @param ch the character to count
+# @return the number of occurrences of ch in s
+def count(s, ch):
+    if s == "":
+        return 0 # Base case
+# Compute the tail of s
+    tail = s[1 : len(s)]
+ # Recursive cases
+    if ch == s[0]:
+        return 1 + count(tail, ch)
+    else:
+        return count(tail, ch)
+# Count the number of times a character entered by the user occurs in a string entered # by the user
+    s = input("Enter a string: ")
+    ch = input("Enter the character to count: ")
+    print("’%s’ occurs %d times in ’%s’" % (ch, count(s, ch), s))
+   
+
+#%%    
+def mcd(a, b):
+    if b == 0:
+        return a
+    else:
+        return mcd(b, a % b)
+    
+    a = int(input("Ingresar el primer numero entero: "))
+    b = int(input("Ingresar el segundo numero entero: "))
+    MCD = mcd(abs(a), abs(b))
+    print("El maximo comun divisor entre", a, "y", b, "es", MCD)
+
+    
+
+#%%    
+def numeros_romanos(numero_romano):
+    if not numero_romano:
+        return 0
+    if len(numero_romano) == 1:
+        return valor_numeros_romanos(numero_romano)
+    if valor_numeros_romanos(numero_romano[0]) >= valor_numeros_romanos(numero_romano[1]):
+        return valor_numeros_romanos(numero_romano[0]) + numeros_romanos(numero_romano[1])
+    else:
+        return valor_numeros_romanos(numero_romano[1]) - valor_numeros_romanos(numero_romano[0]) 
+
+def valor_numeros_romanos(numero_romano):
+    if numero_romano == "M":
+        return 1000
+    elif numero_romano == "D":
+        return 500
+    elif numero_romano == "C":
+        return 100
+    elif numero_romano == "L":
+        return 50
+    elif numero_romano == "X":
+        return 10
+    elif numero_romano == "V":
+        return 5
+    elif numero_romano == "I":
+        return 1
+
+    numero_romano = input("Ingrese uno o dos numerales romanos: ")
+    print("El valor de", numero_romano, "es", numeros_romanos(numero_romano))
+
+    
+        
+#%%
+def factorial(num):
+    if num == 0:
+        return 1
+    else:
+        return num * factorial(num-1)
+
+    numero = int(input("Ingrese un número para calcular su factorial: "))
+    print("El factorial de", numero, "es", factorial(numero))
