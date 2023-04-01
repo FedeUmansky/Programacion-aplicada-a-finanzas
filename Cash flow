@@ -2,19 +2,40 @@
 Federico Umansky
 """
 
-
-#%%
-
 def valor_actual(flujo_de_fondos, tir, periodo):
     if periodo == 0:
         return flujo_de_fondos[0]
     else:
         return (flujo_de_fondos[periodo] / ((1 + tir) ** periodo)) + valor_actual(flujo_de_fondos, tir, periodo - 1)
 
-flujo_de_fondos = []
-tir = 
+
+
+# print("El valor actual del flujo de fondos es: ", valor_actual(flujo_de_fondos, tir, periodo))
+
+def biseccion(flujo_de_fondos, tir1, tir2, tol):
+    a = valor_actual(flujo_de_fondos, tir1, periodo)
+    # print("el valor de a es: ", a, "con una tir1 de: ", tir1)
+    b = valor_actual(flujo_de_fondos, tir2, periodo)
+    # print("el valor de b es: ", b, "con una tir2 de: ", tir2)
+    # print("-")
+   
+    if a > -tol:
+        print("La tir es: ", round(tir1*100, 1),"%")
+    elif b < tol:
+        print("La tir es: ", round(tir2*100, 1),"%")
+    elif a < 0 and b > 0:
+        nueva_tir = (tir1 + tir2)/2
+        c = valor_actual(flujo_de_fondos, nueva_tir, periodo)
+        if c < 0:
+            biseccion(flujo_de_fondos, nueva_tir, tir2, tol)
+        else:
+            biseccion(flujo_de_fondos, tir1, nueva_tir, tol)
+            
+        
+tol = 1
+flujo_de_fondos = [-200, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+tir1 = 1
+tir2 = 0
 periodo = len(flujo_de_fondos) - 1
 
-print("El valor actual del flujo de fondos es: ", valor_actual(flujo_de_fondos, tir, periodo))
-
-#%%
+bis = biseccion(flujo_de_fondos, tir1, tir2, tol)
