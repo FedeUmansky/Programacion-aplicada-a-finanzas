@@ -2,7 +2,6 @@
 Federico Umansky
 Trabajo Practico 1
 """
-
 class MyArray:
     
     def __init__(self, elems, r, c, by_row=True):
@@ -23,6 +22,17 @@ class MyArray:
                        En una matriz 2x2 (r, c) = (2, 2) ; elems (j, k) = [(0, 0), (1, 0), (0, 1), (1, 1)]
         """
 
+    def myprint(self):
+        print('\n')
+        for k in range(0,self.r):
+            print(self.get_row(k))
+        print('\n')
+        return None
+        
+        """
+        La función myprint recibe una lista que contiene una matriz de rxc y la devuelve en formato matricial.
+        """
+    
     def get_pos(self, j, k):
         if j >= self.r or k >= self.c:
             raise ValueError("Las coordenadas j y k deben ser menores que r y c respectivamente.")
@@ -48,16 +58,21 @@ class MyArray:
         """
         Toma una posicion m en la lista y devuelve las coordenadas (j,k) correspondientes en la matriz.
         """
-    
+        
     def switch(self):
         if self.r <= 0 or self.c <= 0:
             raise ValueError("La matriz debe tener al menos una fila y una columna.")
+        new_elems = []
         if self.by_row:
             # new_by_row = False
-            new_elems = [self.elems[k*self.r+j] for j in range(self.r) for k in range(self.c)]
+            for k in range(self.c):
+                for j in range(self.r):
+                    new_elems.append(self.elems[j*self.c+k])
         else:
+            for j in range(self.r):
+                for k in range(self.c):
+                    new_elems.append(self.elems[k*self.r+j])
             # new_by_row = True
-            new_elems = [self.elems[j*self.c+k] for k in range(self.c) for j in range(self.r)]
         return new_elems
     
         """
@@ -68,12 +83,14 @@ class MyArray:
     def get_row(self, j):
         if j >= self.r:
             raise ValueError("La fila j debe ser menor que r.")
-        start_pos = self.get_pos(j, 0)
-        end_pos = start_pos + self.c
         if self.by_row:
+            start_pos = self.get_pos(j, 0)
+            end_pos = start_pos + self.c
             contenido_fila_j = self.elems[start_pos:end_pos]
         else:
-            contenido_fila_j = [self.elems[k * self.r + j] for k in range(self.c)]
+            contenido_fila_j = []
+            for k in range(self.c):
+                contenido_fila_j.append(self.elems[k * self.r + j])
         return contenido_fila_j
     
         """
@@ -83,11 +100,16 @@ class MyArray:
     def get_col(self, k):
         if k >= self.c:
             raise ValueError("La columna k debe ser menor que c.")
-        start_pos = self.get_pos(0, k)
-        end_pos = start_pos + self.r * self.c if self.by_row else start_pos + self.r
-        contenido_columna_k = [self.elems[m] for m in range(start_pos, end_pos, self.c if self.by_row else 1)]
-        return contenido_columna_k
-    
+        if self.by_row:
+            contenido_columna_k = []
+            for j in range(self.r):
+                contenido_columna_k.append(self.elems[j * self.c + k])
+        else:
+            start_pos = self.get_pos(0, k)
+            end_pos = start_pos + self.r
+            contenido_columna_k = self.elems[start_pos:end_pos]
+        return contenido_columna_k   
+
         """
         Devuelve el contenido de la columna k.
         """
@@ -105,25 +127,36 @@ class MyArray:
     def del_row(self, j):
         if j >= self.r:
             raise ValueError("La fila j debe ser menor que r.")
-        start_pos = self.get_pos(j, 0)
-        end_pos = start_pos + self.c
-        new_elems = self.elems[:start_pos] + self.elems[end_pos:]
+        if self.by_row:
+            start_pos = self.get_pos(j, 0)
+            end_pos = start_pos + self.c
+            new_elems = self.elems[:start_pos] + self.elems[end_pos:]
+        else:
+            new_elems = self.elems.copy()
+            for k in range(self.c):
+                new_elems.remove(self.elems[k * self.r + j])
         return new_elems
-    
+      
         """
         Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
         pero habiendo eliminado una fila j.
         """
-
+        
     def del_col(self, k):
         if k >= self.c:
             raise ValueError("La columna k debe ser menor que c.")
-        new_elems = []
-        for i in range(self.r):
-            row = self.get_row(i)
-            del row[k]
-            new_elems.extend(row)
-        return new_elems
+        if self.by_row:
+            new_elems = []
+            for i in range(self.r):
+                row = self.get_row(i)
+                del row[k]
+                new_elems.extend(row)
+        else:
+            start_pos = self.get_pos(0, k)
+            end_pos = start_pos + self.r
+            new_elems = self.elems[:start_pos] + self.elems[end_pos:]
+        return new_elems  
+
 
         """
         Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
@@ -163,11 +196,16 @@ class MyArray:
     def scale_row(self, j, x):
         if j >= self.r:
             raise ValueError("La fila j debe ser menor que r.")
-        new_elems = self.elems[:]
+        new_elems = self.elems.copy()
         start_pos = self.get_pos(j, 0)
-        end_pos = start_pos + self.c
-        for m in range(start_pos, end_pos):
-            new_elems[m] = x * self.elems[m]
+        if self.by_row:
+            end_pos = start_pos + self.c
+            for m in range(start_pos, end_pos):
+                new_elems[m] = x * self.elems[m]
+        else:
+            end_pos = start_pos + self.c * self.r
+            for m in range(start_pos, end_pos, self.r):
+                new_elems[m] = x * self.elems[m]
         return new_elems
     
         """
@@ -178,11 +216,16 @@ class MyArray:
     def scale_col(self, k, y):
         if k >= self.c:
             raise ValueError("La columna k debe ser menor que c.")
-        new_elems = self.elems[:]
+        new_elems = self.elems.copy()
         start_pos = self.get_pos(0, k)
-        end_pos = start_pos + self.r * self.c if self.by_row else start_pos + self.r
-        for m in range(start_pos, end_pos, self.c if self.by_row else 1):
-            new_elems[m] = y * self.elems[m]
+        if self.by_row:
+            end_pos = start_pos + self.r * self.c
+            for m in range(start_pos, end_pos, self.c):
+                new_elems[m] = y * self.elems[m]
+        else:
+            end_pos = start_pos + self.r
+            for m in range(start_pos, end_pos):
+                new_elems[m] = y * self.elems[m]
         return new_elems
     
         """
@@ -193,10 +236,17 @@ class MyArray:
     def transpose(self):
         if self.r <= 0 or self.c <= 0:
             raise ValueError("La matriz debe tener al menos una fila y una columna.")
-        new_elems = [0] * self.r * self.c
-        for i in range(self.r):
-            for j in range(self.c):
-                new_elems[j*self.r+i] = self.elems[i*self.c+j]
+        new_elems = []
+        if self.by_row:
+            # new_by_row = False
+            for k in range(self.c):
+                for j in range(self.r):
+                    new_elems.append(self.elems[j*self.c+k])
+        else:
+            for j in range(self.r):
+                for k in range(self.c):
+                    new_elems.append(self.elems[k*self.r+j])
+            # new_by_row = True
         return new_elems
     
         """
@@ -206,30 +256,30 @@ class MyArray:
     def flip_rows(self):
         if self.r <= 0 or self.c <= 0:
             raise ValueError("La matriz debe tener al menos una fila y una columna.")
-        new_elems = self.elems[:]
-        for i in range(self.c):
-            col = self.elems[i::self.c]
-            new_col = col[::-1]
-            for j, val in enumerate(new_col):
-                new_elems[i+j*self.c] = val
+        new_elems = self.elems.copy()
+        for j in range(self.r//2):
+            k = self.r-j-1
+            for col in range(self.c):
+                pos_j = self.get_pos(j, col)
+                pos_k = self.get_pos(k, col)
+                new_elems[pos_j], new_elems[pos_k] = new_elems[pos_k], new_elems[pos_j]
         return new_elems
-    
+
         """
         Devuelve una nueva lista "new_elems" cuyo contenido es igual a "elems" 
         pero reflejado especularmente en sus filas.
-        
-        "val" es un elemento de la columna invertida que se está recorriendo y se utiliza 
-        para actualizar los elementos de la matriz original en su nueva posición invertida.
         """
-    
+
     def flip_cols(self):
         if self.r <= 0 or self.c <= 0:
             raise ValueError("La matriz debe tener al menos una fila y una columna.")
-        new_elems = self.elems[:]
-        for i in range(self.r):
-            row = self.elems[i*self.c:(i+1)*self.c]
-            new_row = row[::-1]
-            new_elems[i*self.c:(i+1)*self.c] = new_row
+        new_elems = self.elems.copy()
+        for l in range(self.c//2):
+            m = self.c-l-1
+            for row in range(self.r):
+                pos_l = self.get_pos(row, l)
+                pos_m = self.get_pos(row, m)
+                new_elems[pos_l], new_elems[pos_m] = new_elems[pos_m], new_elems[pos_l]
         return new_elems
     
         """
@@ -270,7 +320,105 @@ class MyArray:
         """
         Devuelve el valor del determinante
         """
+        
+    def __add__(self, b):
+        new_elems = []
+        if type(b) == int:
+            for i in self.elems:
+                new_elemento = i + b
+                new_elems.append(new_elemento)
+        if type(b) == list:
+            for i, j in zip(self.elems, b):
+               new_elemento = i + j
+               new_elems.append(new_elemento)
+        return new_elems
+    
+    def __sub__(self, b):
+        new_elems = []
+        if type(b) == int:
+            for i in self.elems:
+                new_elemento = i - b
+                new_elems.append(new_elemento)
+        if type(b) == list:
+            for i, j in zip(self.elems, b):
+               new_elemento = i - j
+               new_elems.append(new_elemento)
+        return new_elems
+    
+    def __rsub__(self, b):
+        new_elems = []
+        if type(b) == int:
+            for i in self.elems:
+                new_elemento = b - i
+                new_elems.append(new_elemento)
+        if type(b) == list:
+            for i, j in zip(self.elems, b):
+               new_elemento = j - i
+               new_elems.append(new_elemento)
+        return new_elems
+    
+    def __mul__(self, b):
+        new_elems = []
+        if type(b) == int:
+            for i in self.elems:
+                new_elemento = i * b
+                new_elems.append(new_elemento)
+        if type(b) == list:
+            for i, j in zip(self.elems, b):
+               new_elemento = i * j
+               new_elems.append(new_elemento)
+        return new_elems
+   
+    def __matmul__(self, b):
+           if self.c != b.r:
+               print ("El numero de columnas de la primera matriz debe ser igual al numero de filas de la segunda")
+           else:
+               new_elems = []
+               for row in range(0, self.r):
+                   fila = self.get_row(row)
+                   for col in range(0, b.c):
+                       columna = b.get_col(col)
+                       elemento = 0
+                       for posicion in range(b.r):
+                           elemento += fila[posicion] * columna[posicion]
+                       new_elems.append(elemento)
+           return new_elems
+       
+
+if __name__== "__main__": 
+    
+    elems = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    r = 3
+    c = 3
+    MYARRAY = MyArray(elems, r, c)
+
+    elems_b = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    r_b = 3
+    c_b = 3
+    MYARRAY_B = MyArray(elems_b, r_b, c_b)
+    
 
     
-MYARRAY = MyArray([], r, c, by_row=())
-print(MYARRAY.metodo)
+    print(MYARRAY.myprint()) #para imprimir la matriz original
+    print(MYARRAY.get_row(1))
+    print(MYARRAY.get_col(1))
+    print(MYARRAY.get_elem(1,1))
+    print(MYARRAY.get_coords(2))
+    print(MYARRAY.get_pos(1,1))
+    print(MYARRAY.switch())
+    print(MYARRAY.transpose())
+    print(MYARRAY.swap_rows(0,1))
+    print(MYARRAY.swap_cols(0,1))
+    print(MYARRAY.del_row(1))
+    print(MYARRAY.del_col(1))
+    print(MYARRAY.scale_row(1,2))
+    print(MYARRAY.scale_col(1,2))
+    print(MYARRAY.flip_rows())
+    print(MYARRAY.flip_cols())
+    print(MYARRAY.det())
+    print(MYARRAY.__add__([10, 11, 12, 20, 5, 7, 9, 3, 1]))
+    print(MYARRAY.__sub__([10, 11, 12, 20, 5, 7, 9, 3, 1]))
+    print(MYARRAY.__rsub__([10, 11, 12, 20, 5, 7, 9, 3, 1]))
+    print(MYARRAY.__mul__(2))
+    print(MYARRAY@MYARRAY_B)
+
